@@ -10,14 +10,6 @@ __pycache__/
 .env
 .venv
 
-# Data files
-data/*.csv
-!data/.gitkeep
-
-# Generated charts
-charts/*.png
-!charts/.gitkeep
-
 # IDE
 .vscode/
 .idea/
