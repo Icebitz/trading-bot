@@ -16,8 +16,8 @@ class Analyzer:
             df = df.set_index('timestamp')
         
         # Create chart
-        plt.figure(figsize=(12, 6))
-        plt.plot(df.index, df['price'], label='Price', linewidth=2)
+        plt.figure(figsize=(18, 6))
+        plt.plot(df.index, df['price'], label='Price', linewidth=1)
         plt.title(title, fontsize=14, fontweight='bold')
         plt.xlabel('Date')
         plt.ylabel('Price (USD)')
