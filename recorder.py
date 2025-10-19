@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 class Recorder:
-    def __init__(self, symbol='BTCUSDT', interval=60, filename='btc_price_data.csv'):
+    def __init__(self, symbol='BTCUSDT', interval=60, filename='data/btc_prices.csv'):
         self.symbol = symbol
         self.interval = interval
         self.filename = filename

@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 class Analyzer:
-    def load_and_plot(self, csv_file='data/btc_prices.csv', output_image='chart/price_chart.png', title='Price History'):
+    def load_and_plot(self, csv_file='data/btc_prices.csv', output_image='charts/price_chart.png', title='Price History'):
         """Load data from CSV and draw price chart"""
         # Load CSV data
         df = pd.read_csv(csv_file)

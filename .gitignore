@@ -1,3 +1,33 @@
+# Python
 venv/
-.env
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment
+.env
+.venv
+
+# Data files
+data/*.csv
+!data/.gitkeep
+
+# Generated charts
+charts/*.png
+!charts/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

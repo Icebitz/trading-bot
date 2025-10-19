@@ -56,11 +56,18 @@ trading-bot/
 ├── requirements.txt     # Python dependencies
 ├── observations.md      # Pattern discovery log
 ├── setup.md             # This file
+├── README.md            # Project overview
+├── .gitignore           # Git ignore rules
 │
 ├── data/                # Price data storage
-│   └── btc_prices.csv
+│   ├── .gitkeep         # Keeps directory in git
+│   └── btc_prices.csv   # (ignored by git)
 │
-└── venv/                # Virtual environment (don't commit)
+├── charts/              # Generated chart images
+│   ├── .gitkeep         # Keeps directory in git
+│   └── price_chart.png  # (ignored by git)
+│
+└── venv/                # Virtual environment (ignored by git)
 ```
 
 ---
@@ -94,11 +101,11 @@ python recorder.py
 ```python
 from recorder import Recorder
 
-# Record every 30 seconds
+# Record every 30 seconds to data directory
 recorder = Recorder(
     symbol='BTCUSDT',
     interval=30,
-    filename='data/btc_prices.csv'
+    filename='data/btc_prices.csv'  # Saves to data/ directory
 )
 recorder.start()
 ```
@@ -106,7 +113,7 @@ recorder.start()
 **Options:**
 - `symbol`: Trading pair (default: 'BTCUSDT')
 - `interval`: Recording interval in seconds (default: 60)
-- `filename`: Output CSV file (default: 'btc_price_data.csv')
+- `filename`: Output CSV file (default: 'data/btc_prices.csv')
 
 **Stop Recording:** Press `Ctrl+C`
 
@@ -131,14 +138,14 @@ analyzer = Analyzer()
 # Analyze BTC prices
 df = analyzer.load_and_plot(
     csv_file='data/btc_prices.csv',
-    output_image='btc_chart.png',
+    output_image='charts/btc_chart.png',
     title='Bitcoin Price Trend'
 )
 
 # Analyze other cryptocurrencies
 df = analyzer.load_and_plot(
     csv_file='data/tao_price_history.csv',
-    output_image='tao_chart.png',
+    output_image='charts/tao_chart.png',
     title='TAO Price History'
 )
 ```
