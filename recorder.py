@@ -3,6 +3,7 @@ import pandas as pd
 import schedule
 import time
 from datetime import datetime
+import pytz
 
 
 class Recorder:
@@ -25,7 +26,8 @@ class Recorder:
     def save_price(self):
         price = self.fetch_price()
         if price:
-            timestamp = datetime.now()
+            jst = pytz.timezone('Asia/Tokyo')
+            timestamp = datetime.now(jst)
             df = pd.DataFrame({
                 'timestamp': [timestamp],
                 'price': [price]
