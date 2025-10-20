@@ -10,15 +10,15 @@ def test_find_pattern():
     # Load data
     print("Loading BTC price data...")
     df = pd.read_csv('data/btc_prices.csv')
-    df['datetime'] = pd.to_datetime(df['datetime'])
-    df = df.set_index('datetime')
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    df = df.set_index('timestamp')
     
     print(f"Loaded {len(df)} records")
     print(f"Date range: {df.index[0]} to {df.index[-1]}")
     print(f"Price range: ${df['price'].min():.2f} - ${df['price'].max():.2f}\n")
     
     # Test with different thresholds
-    thresholds = [0.5, 1.0, 2.0, 5.0]
+    thresholds = [0.001, 0.005, 0.01, 0.05, 0.1]
     
     for threshold in thresholds:
         print(f"\n{'='*50}")
@@ -29,6 +29,8 @@ def test_find_pattern():
         
         for pattern in patterns:
             print(f"  • {pattern}")
+    
+    print("\n")
 
 if __name__ == "__main__":
     test_find_pattern()

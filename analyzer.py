@@ -7,13 +7,13 @@ class Analyzer:
         # Load CSV data
         df = pd.read_csv(csv_file)
         
-        # Convert datetime column to datetime type
-        if 'datetime' in df.columns:
+        # Convert timestamp column to datetime type
+        if 'timestamp' in df.columns:
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            df = df.set_index('timestamp')
+        elif 'datetime' in df.columns:
             df['datetime'] = pd.to_datetime(df['datetime'])
             df = df.set_index('datetime')
-        elif 'timestamp' in df.columns:
-            df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
-            df = df.set_index('timestamp')
         
         # Create chart
         plt.figure(figsize=(18, 6))

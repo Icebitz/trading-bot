@@ -55,8 +55,8 @@ def find_pattern(df, jump_threshold=2.0):
 if __name__ == "__main__":
     # Load data
     df = pd.read_csv('data/btc_prices.csv')
-    df['datetime'] = pd.to_datetime(df['datetime'])
-    df = df.set_index('datetime')
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    df = df.set_index('timestamp')
     
     # Find patterns
     patterns = find_pattern(df, jump_threshold=2.0)
