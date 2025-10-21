@@ -2,7 +2,7 @@
 """Test script for pattern detection"""
 
 import pandas as pd
-from detect import find_pattern
+from detector import find_pattern
 
 def test_find_pattern():
     """Test the find_pattern function with different thresholds"""
@@ -18,7 +18,7 @@ def test_find_pattern():
     print(f"Price range: ${df['price'].min():.2f} - ${df['price'].max():.2f}\n")
     
     # Test with different thresholds
-    thresholds = [0.001, 0.005, 0.01, 0.05, 0.1]
+    thresholds = [0.1, 1]
     
     for threshold in thresholds:
         print(f"\n{'='*50}")

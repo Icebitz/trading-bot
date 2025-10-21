@@ -1,15 +1,6 @@
 import pandas as pd
 
 def find_pattern(df, jump_threshold=2.0):
-    """Find specific patterns in BTC price data
-    
-    Args:
-        df: DataFrame with price data (indexed by datetime)
-        jump_threshold: Percentage threshold for detecting sharp price changes (default: 2.0%)
-    
-    Returns:
-        list: Detected patterns
-    """
     patterns = []
     
     # Calculate percentage change
@@ -32,13 +23,20 @@ def find_pattern(df, jump_threshold=2.0):
     
     # 3. Volatility patterns by time period
     try:
-        morning_vol = df.between_time('06:00', '12:00')['change'].std()
-        afternoon_vol = df.between_time('12:00', '18:00')['change'].std()
-        evening_vol = df.between_time('18:00', '23:59')['change'].std()
-        
-        patterns.append(f"Morning volatility (6-12): {morning_vol:.2f}%")
-        patterns.append(f"Afternoon volatility (12-18): {afternoon_vol:.2f}%")
-        patterns.append(f"Evening volatility (18-24): {evening_vol:.2f}%")
+        time_vols = [
+            ['00:00', '03:00'],
+            ['03:00', '06:00'],
+            ['06:00', '09:00'],
+            ['09:00', '12:00'],
+            ['12:00', '15:00'],
+            ['15:00', '18:00'],
+            ['18:00', '21:00'],
+            ['21:00', '23:59'],
+        ]
+        for vol in time_vols:
+            period_vol = df.between_time(vol[0], vol[1])['change'].std()
+            patterns.append(f"Volatility ({vol[0]} - {vol[1]}): {period_vol:.2f}%")
+
     except:
         # If time filtering fails, calculate overall volatility
         overall_vol = df['change'].std()
