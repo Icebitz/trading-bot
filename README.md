@@ -231,7 +231,7 @@ pip install -r requirements.txt
 - Price updates log every 5 minutes in normal mode
 - Use `--check` mode for one-time analysis without continuous logging
 
-For more troubleshooting tips, see [setup.md](setup.md).
+For more troubleshooting tips, see [setup.md](docs/setup.md).
 
 ---
 
@@ -279,8 +279,8 @@ Contributions, issues, and feature requests are welcome!
 
 ## 📞 Support
 
-- 📚 Check [setup.md](setup.md) for detailed instructions
-- 📊 Review [observations.md](observations.md) for pattern insights
+- 📚 Check [setup.md](docs/setup.md) for detailed instructions
+- 📊 Review [observations.md](docs/observations.md) for pattern insights
 - 🧪 Run `python test_detect.py` to verify installation
 
 ---

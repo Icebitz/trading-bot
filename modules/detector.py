@@ -1,9 +1,8 @@
 import pandas as pd
 
-def find_pattern(df, jump_threshold=2.0):
+def find_pattern(df, jump_threshold=0.5):
     patterns = []
     
-    # Calculate percentage change
     df = df.copy()
     df['change'] = df['price'].pct_change() * 100
     
@@ -54,11 +53,10 @@ if __name__ == "__main__":
     import sys
     import os
     
-    # Get command line arguments
     if len(sys.argv) > 1:
         csv_file = sys.argv[1]
     else:
-        csv_file = 'data/btc_prices.csv'
+        csv_file = '../data/btc_prices.csv'
     
     # Check if file exists
     if not os.path.exists(csv_file):

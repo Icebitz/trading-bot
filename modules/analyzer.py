@@ -1,16 +1,11 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import pytz
-from datetime import datetime, timedelta
 
 class Analyzer:
-    def load_and_plot(self, csv_file='data/btc_prices.csv', output_image='charts/price_chart.png', title='Price History'):
-        # Load CSV data
+    def load_and_plot(self, csv_file='../data/btc_prices.csv', output_image='../charts/price_chart.png', title='Price History'):
         df = pd.read_csv(csv_file)
         
-        # Convert timestamp column to datetime type
         if 'timestamp' in df.columns:
-            # Try different parsing methods for robust timestamp handling
             try:
                 df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601')
             except:
@@ -28,15 +23,9 @@ class Analyzer:
                 except:
                     df['datetime'] = pd.to_datetime(df['datetime'], infer_datetime_format=True)
             df = df.set_index('datetime')
-        
-        # jst = pytz.timezone('Asia/Tokyo')
-        # start_date = datetime.now(jst)
-        # end_date = datetime.now(jst) + timedelta(minutes=10)
 
-        # df = df[start_date:end_date]
-
-        # LAST 10 minutes
-        df = df.tail(100)
+        # LAST 24 hours
+        df = df.tail(24 * 60)
 
         # Create chart
         plt.figure(figsize=(12, 6))
