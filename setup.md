@@ -51,7 +51,7 @@ pip install -r requirements.txt
 trading-bot/
 ├── recorder.py          # Records BTC prices from Binance API
 ├── analyzer.py          # Visualizes price history with charts
-├── detect.py            # Detects patterns in price data
+├── detector.py          # Detects patterns in price data
 ├── test_detect.py       # Test script for pattern detection
 ├── requirements.txt     # Python dependencies
 ├── observations.md      # Pattern discovery log
@@ -97,6 +97,16 @@ source venv/bin/activate
 python recorder.py
 ```
 
+**Quiet Mode (Minimal Logging):**
+```bash
+python recorder.py --quiet
+```
+
+**Check Mode (One-time Analysis):**
+```bash
+python recorder.py --check
+```
+
 **Customized Recording:**
 ```python
 from recorder import Recorder
@@ -114,6 +124,7 @@ recorder.start()
 - `symbol`: Trading pair (default: 'BTCUSDT')
 - `interval`: Recording interval in seconds (default: 60)
 - `filename`: Output CSV file (default: 'data/btc_prices.csv')
+- `verbose`: Enable detailed logging (default: True)
 
 **Stop Recording:** Press `Ctrl+C`
 
@@ -164,7 +175,7 @@ The `find_pattern` function identifies trading patterns in price data.
 **Basic Usage:**
 ```bash
 source venv/bin/activate
-python detect.py
+python detector.py
 ```
 
 **Output Example:**
@@ -180,13 +191,13 @@ python detect.py
 
 **Custom Pattern Detection:**
 ```python
-from detect import find_pattern
+from detector import find_pattern
 import pandas as pd
 
 # Load data
 df = pd.read_csv('data/btc_prices.csv')
-df['datetime'] = pd.to_datetime(df['datetime'])
-df = df.set_index('datetime')
+df['timestamp'] = pd.to_datetime(df['timestamp'])
+df = df.set_index('timestamp')
 
 # Detect patterns with custom threshold
 patterns = find_pattern(df, jump_threshold=1.0)  # More sensitive
@@ -231,7 +242,7 @@ python test_detect.py
 
 3. **Detect Patterns**
    ```bash
-   python detect.py
+   python detector.py
    ```
 
 4. **Document Findings**
@@ -321,7 +332,7 @@ chmod 644 data/*.csv
 
 ### Extending Pattern Detection
 
-Add new patterns in `detect.py`:
+Add new patterns in `detector.py`:
 ```python
 def find_pattern(df, jump_threshold=2.0):
     patterns = []

@@ -69,7 +69,7 @@
 ## Notes & Observations
 
 ### Methodology
-- Using `find_pattern()` function from `detect.py`
+- Using `find_pattern()` function from `detector.py`
 - Analyzing percentage price changes over time
 - Comparing volatility across different time periods
 - Tracking sharp price movements (rises and drops)
@@ -91,5 +91,5 @@
 
 ---
 
-*This file is automatically/manually updated with new pattern discoveries. Use `python detect.py` to generate latest patterns.*
+*This file is automatically/manually updated with new pattern discoveries. Use `python detector.py` to generate latest patterns.*
 

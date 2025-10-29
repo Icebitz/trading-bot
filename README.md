@@ -11,6 +11,9 @@ A Python-based cryptocurrency price tracking and pattern analysis tool for Bitco
 - **🔍 Pattern Detection** - Automatically identify sharp price movements and volatility patterns
 - **⏰ Time-based Analysis** - Compare volatility across different time periods (morning/afternoon/evening)
 - **📝 Observation Logging** - Document and track discovered patterns over time
+- **🔧 Optimized Logging** - Professional logging system with configurable verbosity levels
+- **🔄 Data Recovery** - Automatic detection and recovery of missing price data
+- **⚡ Performance** - Reduced console output with smart logging intervals
 
 ---
 
@@ -27,8 +30,14 @@ source venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Start recording prices
+# Start recording prices (normal mode)
 python recorder.py
+
+# Start recording in quiet mode (minimal logging)
+python recorder.py --quiet
+
+# Check for missing data
+python recorder.py --check
 ```
 
 ---
@@ -59,16 +68,16 @@ df = analyzer.load_and_plot(
 )
 ```
 
-### 3. Pattern Detector (`detect.py`)
+### 3. Pattern Detector (`detector.py`)
 Identifies trading patterns and market behavior.
 
 ```python
-from detect import find_pattern
+from detector import find_pattern
 import pandas as pd
 
 df = pd.read_csv('data/btc_prices.csv')
-df['datetime'] = pd.to_datetime(df['datetime'])
-df = df.set_index('datetime')
+df['timestamp'] = pd.to_datetime(df['timestamp'])
+df = df.set_index('timestamp')
 
 patterns = find_pattern(df, jump_threshold=2.0)
 for pattern in patterns:
@@ -109,7 +118,7 @@ for pattern in patterns:
 trading-bot/
 ├── recorder.py          # Price recording module
 ├── analyzer.py          # Chart visualization module
-├── detect.py            # Pattern detection module
+├── detector.py          # Pattern detection module
 ├── test_detect.py       # Test suite
 ├── requirements.txt     # Python dependencies
 ├── setup.md             # Detailed setup guide
@@ -156,6 +165,15 @@ patterns = find_pattern(df, jump_threshold=5.0)  # Only detect >5% changes
 self.api_url = 'https://api.mexc.com/api/v3/ticker/price'
 ```
 
+### Control Logging Verbosity
+```python
+# Quiet mode (minimal logging)
+recorder = Recorder(verbose=False)
+
+# Normal mode (detailed logging every 5 minutes)
+recorder = Recorder(verbose=True)
+```
+
 ---
 
 ## 📈 Use Cases
@@ -183,7 +201,7 @@ The bot can detect:
 
 1. **Collect Data** - Run `recorder.py` to gather price data
 2. **Visualize Trends** - Use `analyzer.py` to create charts
-3. **Detect Patterns** - Run `detect.py` to find trading signals
+3. **Detect Patterns** - Run `detector.py` to find trading signals
 4. **Document Findings** - Update `observations.md` with insights
 5. **Iterate** - Refine thresholds and continue monitoring
 
@@ -207,6 +225,11 @@ pip install -r requirements.txt
 - Charts are saved as PNG files regardless of display
 - For SSH sessions, use `ssh -X` for X11 forwarding
 - Or comment out `plt.show()` in `analyzer.py`
+
+**Too much console output?**
+- Use `python recorder.py --quiet` for minimal logging
+- Price updates log every 5 minutes in normal mode
+- Use `--check` mode for one-time analysis without continuous logging
 
 For more troubleshooting tips, see [setup.md](setup.md).
 
