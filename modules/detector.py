@@ -1,6 +1,6 @@
 import pandas as pd
 
-def find_pattern(df, jump_threshold=0.5):
+def find_pattern(df, jump_threshold=2.0):
     patterns = []
     
     df = df.copy()
@@ -48,12 +48,12 @@ def find_pattern(df, jump_threshold=0.5):
     return patterns
 
 
-# Example usage
 if __name__ == "__main__":
     import sys
     import os
     
-    if len(sys.argv) > 1:
+    # Only two options: no arg (default file) or CSV path
+    if len(sys.argv) > 1 and sys.argv[1].endswith('.csv'):
         csv_file = sys.argv[1]
     else:
         csv_file = '../data/btc_prices.csv'
@@ -61,41 +61,24 @@ if __name__ == "__main__":
     # Check if file exists
     if not os.path.exists(csv_file):
         print(f"Error: File '{csv_file}' not found!")
-        print("Usage: python3 detector.py [csv_file] [jump_threshold]")
+        print("Usage: python3 detector.py [csv_file]")
         print("Examples:")
-        print("  python3 detector.py                    # Use default data/btc_prices.csv")
+        print("  python3 detector.py                    # Use default ../data/btc_prices.csv")
         print("  python3 detector.py test_data.csv      # Use test_data.csv")
-        print("  python3 detector.py test_data.csv 1.5   # Use test_data.csv with 1.5% threshold")
         sys.exit(1)
     
-    # Get jump threshold from command line
-    jump_threshold = 2.0
-    if len(sys.argv) > 2:
-        try:
-            jump_threshold = float(sys.argv[2])
-        except ValueError:
-            print(f"Warning: Invalid threshold '{sys.argv[2]}', using default 2.0%")
-    
     print(f"Analyzing: {csv_file}")
-    print(f"Jump threshold: {jump_threshold}%")
     print("=" * 50)
     
     # Load data
     df = pd.read_csv(csv_file)
     
-    # Handle different timestamp formats robustly
-    try:
-        df['timestamp'] = pd.to_datetime(df['timestamp'], format='ISO8601')
-    except:
-        try:
-            df['timestamp'] = pd.to_datetime(df['timestamp'], format='mixed')
-        except:
-            df['timestamp'] = pd.to_datetime(df['timestamp'], infer_datetime_format=True)
-    
+    # Convert timestamp
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
     df = df.set_index('timestamp')
     
     # Find patterns
-    patterns = find_pattern(df, jump_threshold=jump_threshold)
+    patterns = find_pattern(df, jump_threshold=2.0)
     
     # Get base name for display
     base_name = os.path.splitext(os.path.basename(csv_file))[0]
