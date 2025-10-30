@@ -8,7 +8,7 @@ import pandas as pd
 
 # Make sure we can import from modules/
 sys.path.append(os.path.join(os.path.dirname(__file__), 'modules'))
-from ma_strategy import MovingAverageStrategy
+from modules.ma_strategy import MovingAverageStrategy
 
 
 class TestMAStrategyWithRealData(unittest.TestCase):
@@ -74,6 +74,7 @@ class TestMAStrategyWithRealData(unittest.TestCase):
     
     # Format moving averages to 2 decimal places
     df_formatted = df.copy()
+    df_formatted['price'] = df_formatted['price'].apply(lambda x: f"{x:.2f}" if not pd.isna(x) else "")
     df_formatted['short_ma'] = df_formatted['short_ma'].apply(lambda x: f"{x:.2f}" if not pd.isna(x) else "")
     df_formatted['long_ma'] = df_formatted['long_ma'].apply(lambda x: f"{x:.2f}" if not pd.isna(x) else "")
     

@@ -2,7 +2,7 @@
 """Test script for pattern detection"""
 
 import pandas as pd
-from detector import find_pattern
+from modules.detector import find_pattern
 
 def test_find_pattern():
     """Test the find_pattern function with different thresholds"""
