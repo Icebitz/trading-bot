@@ -56,14 +56,14 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1].endswith('.csv'):
         csv_file = sys.argv[1]
     else:
-        csv_file = '../data/btc_prices.csv'
+        csv_file = 'data/btc_prices.csv'
     
     # Check if file exists
     if not os.path.exists(csv_file):
         print(f"Error: File '{csv_file}' not found!")
         print("Usage: python3 detector.py [csv_file]")
         print("Examples:")
-        print("  python3 detector.py                    # Use default ../data/btc_prices.csv")
+        print("  python3 detector.py                    # Use default data/btc_prices.csv")
         print("  python3 detector.py test_data.csv      # Use test_data.csv")
         sys.exit(1)
     

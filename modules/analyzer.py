@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 
 class Analyzer:
-    def load_and_plot(self, csv_file='../data/btc_prices.csv', output_image='../charts/price_chart.png', title='Price History'):
+    def load_and_plot(self, csv_file='data/btc_prices.csv', output_image='charts/price_chart.png', title='Price History'):
         df = pd.read_csv(csv_file)
         
         # Convert timestamp column
@@ -45,14 +45,14 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1].endswith('.csv'):
         csv_file = sys.argv[1]
     else:
-        csv_file = '../data/btc_prices.csv'
+        csv_file = 'data/btc_prices.csv'
     
     # Check if file exists
     if not os.path.exists(csv_file):
         print(f"Error: File '{csv_file}' not found!")
         print("Usage: python3 analyzer.py [csv_file]")
         print("Examples:")
-        print("  python3 analyzer.py                    # Use default ../data/btc_prices.csv")
+        print("  python3 analyzer.py                    # Use default data/btc_prices.csv")
         print("  python3 analyzer.py test_data.csv      # Use test_data.csv")
         sys.exit(1)
     
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     
     # Generate output filename based on input
     base_name = os.path.splitext(os.path.basename(csv_file))[0]
-    output_image = f'../charts/{base_name}_chart.png'
+    output_image = f'charts/{base_name}_chart.png'
     
     print(f"Analyzing: {csv_file}")
     print(f"Output: {output_image}")
