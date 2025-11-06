@@ -7,6 +7,8 @@ import time
 import pandas as pd
 from datetime import datetime
 
+import requests
+
 # Make sure we can import from modules/
 sys.path.append(os.path.join(os.path.dirname(__file__), 'modules'))
 from modules.ma_strategy import MovingAverageStrategy
@@ -40,6 +42,16 @@ def format_log_message(signal, row):
   
   return f"[{timestamp}] {signal} SIGNAL | Price: ${price:.2f} | Short MA: {short_ma_str} | Long MA: {long_ma_str}"
 
+
+def send_telegram_message(message: str):
+  TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+  TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+  url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+  payload = {
+    'chat_id': TELEGRAM_CHAT_ID,
+    'text': message
+  }
+  requests.post(url, data=payload)
 
 def main():
   csv_file = os.path.join(os.path.dirname(__file__), 'data', 'btc_prices.csv')
@@ -100,6 +112,8 @@ def main():
               log_message = format_log_message(current_signal, latest_row)
               print(f"*** {log_message} ***")
               last_signal = current_signal
+
+              send_telegram_message(log_message)
         else:
           # Reset last_signal if we're back to HOLD
           if last_signal in ['BUY', 'SELL']:
