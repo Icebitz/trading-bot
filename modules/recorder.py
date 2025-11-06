@@ -20,7 +20,8 @@ class Recorder:
     def __init__(self, symbol='BTCUSDT', interval=60, filename='data/btc_prices.csv', verbose=True):
         self.symbol = symbol
         self.interval = interval  # seconds; use 60 for per-minute recording
-        self.filename = filename
+        self.dirname = os.path.dirname(__file__)
+        self.filename = os.path.join(os.path.dirname(self.dirname), filename)
         self.api_url = 'https://api.binance.com/api/v3/ticker/price'
         self.consecutive_failures = 0
         self.max_consecutive_failures = 3
@@ -330,7 +331,7 @@ if __name__ == '__main__':
         filename = sys.argv[1]
     else:
         filename = 'data/btc_prices.csv'
-
+        
     logger.info(f"Filename: {filename}")
     recorder = Recorder(symbol='BTCUSDT', interval=60, filename=filename, verbose=True)
     logger.info(f"Recording to {filename}")

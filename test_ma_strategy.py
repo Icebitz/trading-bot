@@ -26,8 +26,12 @@ def main():
   df = strategy.generate_signals(df)
   
   # Save results to CSV file
-  output_file = os.path.join(os.path.dirname(__file__), 'data', 'btc_ma_signals.csv')
-  df.to_csv(output_file, index=False)
+  output_file = os.path.join(os.path.dirname(__file__), 'data', 'btc_signals.csv')
+  results_df = df.copy()
+  results_df['price'] = results_df['price'].apply(lambda x: f'{float(x):.2f}')
+  results_df['short_ma'] = results_df['short_ma'].apply(lambda x: f'{float(x):.2f}')
+  results_df['long_ma'] = results_df['long_ma'].apply(lambda x: f'{float(x):.2f}')
+  results_df.to_csv(output_file, index=False)
   print(f'Moving averages and signals calculated and saved to: {output_file}')
   print(f'Total rows: {len(df)}')
 

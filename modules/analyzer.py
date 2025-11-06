@@ -3,8 +3,13 @@ import matplotlib.pyplot as plt
 import os
 
 class Analyzer:
-    def load_and_plot(self, csv_file='data/btc_prices.csv', output_image='charts/price_chart.png', title='Price History'):
-        df = pd.read_csv(csv_file)
+    def __init__(self, csv_file='data/btc_prices.csv', output_image='charts/price_chart.png'):
+        self.dir_name = os.path.dirname(__file__)
+        self.csv_file = os.path.join(os.path.dirname(self.dir_name), csv_file)
+        self.output_image = os.path.join(os.path.dirname(self.dir_name), output_image)
+
+    def load_and_plot(self, title='Price History'):
+        df = pd.read_csv(self.csv_file)
         
         # Convert timestamp column
         if 'timestamp' in df.columns:
@@ -18,7 +23,7 @@ class Analyzer:
         df = df.tail(24 * 60)
 
         # Create chart
-        plt.figure(figsize=(12, 6))
+        plt.figure(figsize=(12, 8))
         plt.plot(df.index, df['price'], label='Price', linewidth=1)
         plt.title(title, fontsize=14, fontweight='bold')
         plt.xlabel('Date')
@@ -28,9 +33,9 @@ class Analyzer:
         plt.tight_layout()
         
         # Save chart
-        os.makedirs(os.path.dirname(output_image), exist_ok=True)
-        plt.savefig(output_image, dpi=300, bbox_inches='tight')
-        print(f"Chart saved: {output_image}")
+        os.makedirs(os.path.dirname(self.output_image), exist_ok=True)
+        plt.savefig(self.output_image, dpi=300, bbox_inches='tight')
+        print(f"Chart saved: {self.output_image}")
         
         # Show chart
         plt.show()
@@ -56,19 +61,14 @@ if __name__ == "__main__":
         print("  python3 analyzer.py test_data.csv      # Use test_data.csv")
         sys.exit(1)
     
-    analyzer = Analyzer()
-    
-    # Generate output filename based on input
     base_name = os.path.splitext(os.path.basename(csv_file))[0]
-    output_image = f'charts/{base_name}_chart.png'
+    output_image = f'charts/{base_name}.png'
+
+    analyzer = Analyzer(csv_file=csv_file, output_image=output_image)
     
     print(f"Analyzing: {csv_file}")
     print(f"Output: {output_image}")
     
     # Generate chart
-    df = analyzer.load_and_plot(
-        csv_file=csv_file, 
-        output_image=output_image, 
-        title=f'{base_name.title()} Price Trend'
-    )
+    df = analyzer.load_and_plot(title=f'{base_name.title()} Price Trend')
 

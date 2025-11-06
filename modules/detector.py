@@ -58,20 +58,23 @@ if __name__ == "__main__":
     else:
         csv_file = 'data/btc_prices.csv'
     
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(os.path.dirname(dirname), csv_file)
+
     # Check if file exists
-    if not os.path.exists(csv_file):
-        print(f"Error: File '{csv_file}' not found!")
+    if not os.path.exists(filename):
+        print(f"Error: File '{filename}' not found!")
         print("Usage: python3 detector.py [csv_file]")
         print("Examples:")
         print("  python3 detector.py                    # Use default data/btc_prices.csv")
         print("  python3 detector.py test_data.csv      # Use test_data.csv")
         sys.exit(1)
     
-    print(f"Analyzing: {csv_file}")
+    print(f"Analyzing: {filename}")
     print("=" * 50)
     
     # Load data
-    df = pd.read_csv(csv_file)
+    df = pd.read_csv(filename)
     
     # Convert timestamp
     df['timestamp'] = pd.to_datetime(df['timestamp'])

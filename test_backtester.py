@@ -37,7 +37,13 @@ def main():
 	results_df['daily_return'] = results_df['portfolio_value'].pct_change() * 100
 	
 	# Save results to CSV file
-	output_file = os.path.join(os.path.dirname(__file__), 'data', 'btc_backtest_results.csv')
+	output_file = os.path.join(os.path.dirname(__file__), 'data', 'btc_backtest.csv')
+
+	results_df['price'] = results_df['price'].apply(lambda x: f'{float(x):.2f}')
+	results_df['short_ma'] = results_df['short_ma'].apply(lambda x: f'{float(x):.2f}')
+	results_df['long_ma'] = results_df['long_ma'].apply(lambda x: f'{float(x):.2f}')
+	results_df['portfolio_value'] = results_df['portfolio_value'].apply(lambda x: f'{float(x):.2f}')
+	results_df['daily_return'] = results_df['daily_return'].apply(lambda x: f'{float(x):.2f}')
 	results_df.to_csv(output_file, index=False)
 	
 	print(f'Backtest completed and saved to: {output_file}')
