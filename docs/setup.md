@@ -1,381 +1,210 @@
 # Trading Bot - Setup Guide
 
-Complete setup instructions for the BTC Price Trading Bot project.
+Step-by-step instructions for installing, configuring, and operating the BTC trading bot toolkit.
 
 ---
 
 ## Prerequisites
 
-Before starting, ensure you have:
-- **Python 3.8+** installed (tested with Python 3.13)
-- **pip** (Python package manager)
-- **Internet connection** (for fetching BTC prices from Binance API)
-- **Linux/Mac/Windows** OS supported
+- **Python 3.8+** (tested on Python 3.13)
+- **pip** for dependency management
+- Stable internet connection (Binance API access)
+- macOS, Linux, or Windows
 
 ---
 
-## Quick Start
+## Environment Setup
 
-### 1. Clone or Navigate to Project
 ```bash
-cd /home/ubuntu/work/trading-bot
-```
+git clone https://github.com/Icebitz/trading-bot.git
+cd trading-bot
 
-### 2. Create Virtual Environment (if not exists)
-```bash
 python3 -m venv venv
-```
+source venv/bin/activate          # Windows: venv\Scripts\activate
 
-### 3. Activate Virtual Environment
-
-**Linux/Mac:**
-```bash
-source venv/bin/activate
-```
-
-**Windows:**
-```bash
-venv\Scripts\activate
-```
-
-### 4. Install Dependencies
-```bash
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+> Keep the virtual environment active whenever you run project scripts.
+
 ---
 
-## Project Structure
+## Project Layout
 
 ```
 trading-bot/
-├── recorder.py          # Records BTC prices from Binance API
-├── analyzer.py          # Visualizes price history with charts
-├── detector.py          # Detects patterns in price data
-├── test_detect.py       # Test script for pattern detection
-├── requirements.txt     # Python dependencies
-├── observations.md      # Pattern discovery log
-├── setup.md             # This file
-├── README.md            # Project overview
-├── .gitignore           # Git ignore rules
-│
-├── data/                # Price data storage
-│   ├── .gitkeep         # Keeps directory in git
-│   └── btc_prices.csv   # (ignored by git)
-│
-├── charts/              # Generated chart images
-│   ├── .gitkeep         # Keeps directory in git
-│   └── price_chart.png  # (ignored by git)
-│
-└── venv/                # Virtual environment (ignored by git)
+├── modules/                # Core application modules
+│   ├── analyzer.py         # Price chart generation
+│   ├── backtester.py       # Portfolio simulation logic
+│   ├── detector.py         # Volatility & pattern summaries
+│   ├── historical.py       # Binance 1m backfill helper
+│   ├── ma_strategy.py      # Moving-average strategy
+│   ├── recorder.py         # Live price capture
+│   └── visualizer.py       # Signal + equity plotting
+├── data/                   # CSV outputs (created at runtime)
+├── charts/                 # Generated chart images
+├── docs/                   # Documentation (this folder)
+├── live_signal_monitor.py  # Real-time BUY/SELL alert loop
+├── test_backtester.py      # Smoke script for backtesting stage
+├── test_detect.py          # Pattern detection demo
+├── test_ma_strategy.py     # Moving-average signal generator
+├── test_visualizer.py      # Charting smoke test
+├── requirements.txt        # Python dependencies
+└── README.md               # Project overview
 ```
 
 ---
 
-## Dependencies
+## Dependency Snapshot
 
-The project requires the following Python packages (see `requirements.txt`):
+`requirements.txt` currently pins the core stack:
 
 ```
-requests>=2.31.0      # API calls to Binance
-pandas>=2.0.0         # Data analysis and manipulation
-matplotlib>=3.7.0     # Chart visualization
-schedule>=1.2.0       # Scheduled price recording
+pandas>=1.3.0
+requests>=2.25.0
+schedule>=1.1.0
+pytz>=2021.1
+matplotlib>=3.3.0
 ```
+
+Install optional tooling (e.g., `pytest`) as needed via `pip install pytest`.
 
 ---
 
-## Usage Guide
+## Core Workflows
 
-### 1. Recording BTC Prices
+### 1. Record Minute-Level Prices
 
-The `Recorder` class fetches live BTC prices from Binance API and saves them to CSV.
-
-**Basic Usage:**
 ```bash
 source venv/bin/activate
-python recorder.py
+python modules/recorder.py
 ```
 
-**Quiet Mode (Minimal Logging):**
-```bash
-python recorder.py --quiet
-```
+- Writes data to `data/btc_prices.csv`
+- Handles API hiccups with retries and minimal logging noise
+- Press `Ctrl+C` to stop recording
 
-**Check Mode (One-time Analysis):**
-```bash
-python recorder.py --check
-```
+**Customise programmatically:**
 
-**Customized Recording:**
 ```python
-from recorder import Recorder
+from modules.recorder import Recorder
 
-# Record every 30 seconds to data directory
 recorder = Recorder(
     symbol='BTCUSDT',
-    interval=30,
-    filename='data/btc_prices.csv'  # Saves to data/ directory
+    interval=60,
+    filename='/home/ubuntu/work/trading-bot/data/btc_prices.csv',
 )
 recorder.start()
 ```
 
-**Options:**
-- `symbol`: Trading pair (default: 'BTCUSDT')
-- `interval`: Recording interval in seconds (default: 60)
-- `filename`: Output CSV file (default: 'data/btc_prices.csv')
-- `verbose`: Enable detailed logging (default: True)
+### 2. Generate Moving-Average Signals
 
-**Stop Recording:** Press `Ctrl+C`
-
----
-
-### 2. Analyzing & Visualizing Prices
-
-The `Analyzer` class creates price trend charts from CSV data.
-
-**Basic Usage:**
 ```bash
-source venv/bin/activate
-python analyzer.py
+python test_ma_strategy.py
 ```
 
-**Custom Analysis:**
-```python
-from analyzer import Analyzer
+- Consumes `data/btc_prices.csv`
+- Outputs `data/btc_signals.csv` with short/long MAs and crossover signals
 
-analyzer = Analyzer()
+### 3. Backtest the Strategy
 
-# Analyze BTC prices
-df = analyzer.load_and_plot(
-    csv_file='data/btc_prices.csv',
-    output_image='charts/btc_chart.png',
-    title='Bitcoin Price Trend'
-)
-
-# Analyze other cryptocurrencies
-df = analyzer.load_and_plot(
-    csv_file='data/tao_price_history.csv',
-    output_image='charts/tao_chart.png',
-    title='TAO Price History'
-)
-```
-
-**Output:**
-- Chart saved as PNG image
-- Returns DataFrame for further analysis
-- Displays interactive chart window
-
----
-
-### 3. Pattern Detection
-
-The `find_pattern` function identifies trading patterns in price data.
-
-**Basic Usage:**
 ```bash
-source venv/bin/activate
-python detector.py
+python test_backtester.py
 ```
 
-**Output Example:**
-```
-=== BTC Price Patterns ===
-  • Sharp rises (>2%): 3 times
-  • Max increase: 2.45%
-  • Morning volatility (6-12): 0.07%
-  • Afternoon volatility (12-18): 0.04%
-  • Evening volatility (18-24): 0.03%
-  • Total price change: 1.96%
-```
+- Requires `data/btc_signals.csv`
+- Appends portfolio value and daily return columns
+- Produces `data/btc_backtest.csv` with formatted numbers
 
-**Custom Pattern Detection:**
-```python
-from detector import find_pattern
-import pandas as pd
+### 4. Visualise Results
 
-# Load data
-df = pd.read_csv('data/btc_prices.csv')
-df['timestamp'] = pd.to_datetime(df['timestamp'])
-df = df.set_index('timestamp')
-
-# Detect patterns with custom threshold
-patterns = find_pattern(df, jump_threshold=1.0)  # More sensitive
-
-# Print results
-for pattern in patterns:
-    print(pattern)
-```
-
-**Pattern Types Detected:**
-- Sharp price rises/drops
-- Volatility by time period
-- Overall price trends
-- Max increase/decrease events
-
----
-
-### 4. Testing Pattern Detection
-
-Run the test suite:
 ```bash
-source venv/bin/activate
+python modules/analyzer.py        # 24h price chart → charts/price_chart.png
+python test_visualizer.py         # Equity + signal chart → charts/strategy_results.png
+```
+
+### 5. Explore Patterns & Volatility
+
+```bash
 python test_detect.py
 ```
 
----
+- Prints sharp moves, intraday volatility, and net change summaries using `modules.detector.find_pattern`.
 
-## Workflows
+### 6. Monitor Live Signals (Optional)
 
-### Complete Analysis Workflow
+```bash
+export TELEGRAM_BOT_TOKEN="xxx"
+export TELEGRAM_CHAT_ID="yyy"
+python live_signal_monitor.py
+```
 
-1. **Start Recording** (run in background)
-   ```bash
-   source venv/bin/activate
-   python recorder.py &
-   ```
-
-2. **Analyze Data** (after collecting data)
-   ```bash
-   python analyzer.py
-   ```
-
-3. **Detect Patterns**
-   ```bash
-   python detector.py
-   ```
-
-4. **Document Findings**
-   - Update `observations.md` with discoveries
-   - Save generated charts to `charts/` directory
+- Recomputes moving averages every minute from `data/btc_prices.csv`
+- Prints BUY/SELL transitions and pushes Telegram notifications when credentials are set
 
 ---
 
-## Configuration
+## Advanced Configuration
 
-### Change Data Source
-
-Edit `recorder.py` to use different API:
+**Adjust recording cadence**
 ```python
-# Use MEXC instead of Binance
-self.api_url = 'https://api.mexc.com/api/v3/ticker/price'
+Recorder(interval=300)    # record every 5 minutes
 ```
 
-### Adjust Recording Interval
-
+**Backfill missing minutes**
 ```python
-recorder = Recorder(symbol='BTCUSDT', interval=300)  # Every 5 minutes
+from modules.historical import fetch_minute_prices
+rows = fetch_minute_prices('BTCUSDT', start_dt, end_dt)
 ```
 
-### Customize Pattern Thresholds
-
+**Tune strategy windows**
 ```python
-patterns = find_pattern(df, jump_threshold=5.0)  # Only detect >5% changes
+from modules.ma_strategy import MovingAverageStrategy
+strategy = MovingAverageStrategy(short_window=20, long_window=100)
 ```
 
 ---
 
 ## Troubleshooting
 
-### Issue: `ModuleNotFoundError: No module named 'pandas'`
-**Solution:**
-```bash
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### Issue: Virtual environment not activating
-**Solution (Linux/Mac):**
-```bash
-chmod +x venv/bin/activate
-source venv/bin/activate
-```
-
-### Issue: API connection fails
-**Solution:**
-- Check internet connection
-- Verify Binance API is accessible: `curl https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`
-- Try alternative API endpoint in `recorder.py`
-
-### Issue: Charts not displaying
-**Solution:**
-- Ensure X11 forwarding if using SSH: `ssh -X user@host`
-- Charts are saved as PNG even if display fails
-- Use headless mode by commenting out `plt.show()` in `analyzer.py`
-
-### Issue: Permission denied on CSV files
-**Solution:**
-```bash
-chmod 644 data/*.csv
-```
+| Issue | Fix |
+| --- | --- |
+| `ModuleNotFoundError` | Activate venv and rerun `pip install -r requirements.txt` |
+| Binance API errors | Check network, retry later, or swap endpoint in `modules/recorder.py` |
+| Charts not displaying | Headless environments still save PNGs; comment out `plt.show()` if needed |
+| CSV permission errors | `chmod 644 data/*.csv` |
+| Missing signals/backtest files | Run `test_ma_strategy.py` before `test_backtester.py` |
 
 ---
 
 ## Best Practices
 
-1. **Always activate virtual environment** before running scripts
-2. **Run recorder in background** or separate terminal for continuous data collection
-3. **Backup CSV files** regularly to prevent data loss
-4. **Document patterns** in `observations.md` after analysis
-5. **Use version control** (git) but exclude `venv/` and `__pycache__/`
+- Keep the recorder running in a dedicated terminal for continuous data.
+- Version-control your notebooks/scripts but ignore `data/`, `charts/`, `venv/`, and `__pycache__/`.
+- Snapshot CSV outputs before major experiments.
+- Log key findings in `docs/observations.md` after each analysis pass.
+- Run `python -m pytest` occasionally to smoke-test the workflow.
 
 ---
 
-## Development
+## Contribution Guide
 
-### Adding New Features
-
-1. Create feature branch
-2. Add tests in `test_*.py`
-3. Update documentation
-4. Test with real data
-
-### Extending Pattern Detection
-
-Add new patterns in `detector.py`:
-```python
-def find_pattern(df, jump_threshold=2.0):
-    patterns = []
-    
-    # Your custom pattern logic here
-    # Example: Detect consecutive rises
-    consecutive_rises = 0
-    for change in df['change']:
-        if change > 0:
-            consecutive_rises += 1
-        else:
-            consecutive_rises = 0
-    
-    patterns.append(f"Max consecutive rises: {consecutive_rises}")
-    return patterns
-```
+1. Create a feature branch.
+2. Add or update smoke scripts in `test_*.py`.
+3. Run through the core workflow with fresh data.
+4. Update documentation (README + docs/).
+5. Open a pull request describing behaviour changes and test evidence.
 
 ---
 
-## Resources
+## Reference Links
 
-- **Binance API Docs**: https://binance-docs.github.io/apidocs/spot/en/
-- **Pandas Docs**: https://pandas.pydata.org/docs/
-- **Matplotlib Docs**: https://matplotlib.org/stable/contents.html
-
----
-
-## Support & Contribution
-
-For issues, improvements, or questions:
-1. Check `observations.md` for pattern insights
-2. Review this setup guide
-3. Test with `test_detect.py`
+- [Binance Spot API](https://binance-docs.github.io/apidocs/spot/en/)
+- [Pandas Documentation](https://pandas.pydata.org/docs/)
+- [Matplotlib Documentation](https://matplotlib.org/stable/)
 
 ---
 
-## License
-
-This is a personal trading analysis tool. Use at your own risk.
-
-**Disclaimer**: This tool is for educational purposes. Not financial advice.
-
----
-
-*Last Updated: October 19, 2025*
+*Last Updated: November 10, 2025*
 
