@@ -1,11 +1,25 @@
-import requests
-import pandas as pd
-import schedule
+import logging
+import os
+import sys
 import time
 from datetime import datetime, timedelta
+from pathlib import Path
+
+import pandas as pd
 import pytz
-import os
-import logging
+import requests
+import schedule
+
+_MODULE_DIR = Path(__file__).resolve().parent
+_PROJECT_ROOT = _MODULE_DIR.parent
+_PROJECT_ROOT_STR = str(_PROJECT_ROOT)
+if _PROJECT_ROOT_STR not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT_STR)
+
+try:
+    from modules.historical import fetch_minute_prices
+except ModuleNotFoundError:
+    from historical import fetch_minute_prices
 
 logging.basicConfig(
     level=logging.WARNING,
@@ -92,12 +106,6 @@ class Recorder:
     # Historical recovery removed for simplicity
     def fetch_historical_data(self, start_time, end_time):
         try:
-            # Try absolute import first (works when running as a script)
-            try:
-                from modules.historical import fetch_minute_prices
-            except Exception:
-                # Fallback to relative import when used as a package
-                from .historical import fetch_minute_prices
             return fetch_minute_prices(self.symbol, start_time, end_time)
         except Exception as e:
             logger.error(f"Historical fetch error: {e}")
@@ -229,7 +237,6 @@ class Recorder:
 
 
 if __name__ == '__main__':
-    import sys
     # Only two options: no arg (default file) or CSV path
     if len(sys.argv) > 1 and sys.argv[1].endswith('.csv'):
         filename = sys.argv[1]
