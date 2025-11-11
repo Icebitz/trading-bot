@@ -106,7 +106,14 @@ class Recorder:
     # Historical recovery removed for simplicity
     def fetch_historical_data(self, start_time, end_time):
         try:
-            return fetch_minute_prices(self.symbol, start_time, end_time)
+            if start_time is None or end_time is None:
+                return []
+
+            jst = pytz.timezone('Asia/Tokyo')
+            start_aware = jst.localize(start_time).astimezone(pytz.utc)
+            end_aware = jst.localize(end_time).astimezone(pytz.utc)
+
+            return fetch_minute_prices(self.symbol, start_aware, end_aware)
         except Exception as e:
             logger.error(f"Historical fetch error: {e}")
             return []

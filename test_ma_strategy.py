@@ -21,7 +21,7 @@ def main():
   df = df.sort_values('timestamp').reset_index(drop=True)
   
   # Calculate moving averages and generate signals
-  strategy = MovingAverageStrategy(short_window=50, long_window=200)
+  strategy = MovingAverageStrategy(short_window=150, long_window=500)
   df = strategy.calculate_moving_averages(df)
   df = strategy.generate_signals(df)
   
