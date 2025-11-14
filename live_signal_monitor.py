@@ -8,6 +8,8 @@ import pandas as pd
 from datetime import datetime
 
 import requests
+import dotenv
+dotenv.load_dotenv()
 
 # Make sure we can import from modules/
 sys.path.append(os.path.join(os.path.dirname(__file__), 'modules'))
@@ -57,7 +59,9 @@ def main():
   csv_file = os.path.join(os.path.dirname(__file__), 'data', 'btc_prices.csv')
   check_interval = 60  # Check every 60 seconds
   
-  strategy = MovingAverageStrategy(short_window=50, long_window=200)
+  short_window = os.getenv('SHORT_WINDOW', 50)
+  long_window = os.getenv('LONG_WINDOW', 200)
+  strategy = MovingAverageStrategy(short_window=short_window, long_window=long_window)
   last_signal = None
   
   print("=" * 80)

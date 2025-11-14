@@ -20,10 +20,10 @@ class Analyzer:
             df = df.set_index('datetime')
 
         # Get last 24 hours of data
-        df = df.tail(24 * 60)
+        df = df.tail(30 * 60)
 
         # Create chart
-        plt.figure(figsize=(12, 8))
+        plt.figure(figsize=(12, 5))
         plt.plot(df.index, df['price'], label='Price', linewidth=1)
         plt.title(title, fontsize=14, fontweight='bold')
         plt.xlabel('Date')

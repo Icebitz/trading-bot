@@ -2,6 +2,9 @@ import os
 import sys
 import pandas as pd
 
+import dotenv
+dotenv.load_dotenv()
+
 # Make sure we can import from modules/
 sys.path.append(os.path.join(os.path.dirname(__file__), 'modules'))
 from modules.ma_strategy import MovingAverageStrategy
@@ -21,7 +24,9 @@ def main():
   df = df.sort_values('timestamp').reset_index(drop=True)
   
   # Calculate moving averages and generate signals
-  strategy = MovingAverageStrategy(short_window=150, long_window=500)
+  short_window = os.getenv('SHORT_WINDOW', 50)
+  long_window = os.getenv('LONG_WINDOW', 200)
+  strategy = MovingAverageStrategy(short_window=short_window, long_window=long_window)
   df = strategy.calculate_moving_averages(df)
   df = strategy.generate_signals(df)
   

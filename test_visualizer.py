@@ -5,6 +5,9 @@ import os
 import sys
 import pandas as pd
 
+import dotenv
+dotenv.load_dotenv()
+
 # Add modules directory to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'modules'))
 from modules.visualizer import plot_strategy_results

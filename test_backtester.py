@@ -2,6 +2,9 @@ import os
 import sys
 import pandas as pd
 
+import dotenv
+dotenv.load_dotenv()
+
 # Add modules directory to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'modules'))
 from modules.backtester import Backtester
@@ -21,7 +24,9 @@ def main():
 	
 	# Generate signals if not already present
 	if 'signal' not in df.columns:
-		strategy = MovingAverageStrategy(short_window=50, long_window=200)
+		short_window = os.getenv('SHORT_WINDOW', 50)
+		long_window = os.getenv('LONG_WINDOW', 200)
+		strategy = MovingAverageStrategy(short_window=short_window, long_window=long_window)
 		df = strategy.generate_signals(df)
 	
 	# Filter out rows with NaN signals
