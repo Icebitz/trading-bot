@@ -26,7 +26,9 @@ def main():
   # Calculate moving averages and generate signals
   short_window = os.getenv('SHORT_WINDOW', 50)
   long_window = os.getenv('LONG_WINDOW', 200)
-  strategy = MovingAverageStrategy(short_window=short_window, long_window=long_window)
+  print(f'Using short window: {short_window}, long window: {long_window}')
+
+  strategy = MovingAverageStrategy(short_window=int(short_window), long_window=int(long_window))
   df = strategy.calculate_moving_averages(df)
   df = strategy.generate_signals(df)
   

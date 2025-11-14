@@ -61,7 +61,7 @@ def main():
   
   short_window = os.getenv('SHORT_WINDOW', 50)
   long_window = os.getenv('LONG_WINDOW', 200)
-  strategy = MovingAverageStrategy(short_window=short_window, long_window=long_window)
+  strategy = MovingAverageStrategy(short_window=int(short_window), long_window=int(long_window))
   last_signal = None
   
   print("=" * 80)
